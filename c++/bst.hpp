@@ -83,18 +83,45 @@ node* _begin() const {
 
 
 
-node* _find() const{
+node* _find(const key_type& x) const{
 
   auto tmp = root.get();
 
+  while(tmp){                         // until tmp is != nullptr
 
+    if(op(x, tmp->pair.first)){       // if the searched key is smaller than the root key
+				      // according to the comparison type
+      tmp = tmp->left.get();
 
+    }else if(op(tmp->pair.first, x)){ // if the searched key is greater than the root key
+      				      // according to the comparison type
+      tmp = tmp->right.get();
 
+    }else{
+    
+      return tmp;
+  }
+  // the tree is empty or the key doesn't exist, so we return end (which is nullptr)
+  return nullptr;
 }
 
 
 
+void _sub_balance( std::vector<pair_type> vec, unsigned int a, unsigned int b ){
 
+  // return condition to end recursive calls
+  if(b < a){ return; }
+
+  int mid{(b+a)/2};		// find mid index
+
+  this->insert(vec[mid]);		// insert the corresponding pair in the vector
+
+  // recursively call the function
+  _sub_balance(vec, 0, mid-1);
+  _sub_balance(vec, mid+1, b);
+  
+  return;
+}
 
 
 
@@ -143,14 +170,43 @@ node* _find() const{
   // Find a given key. If the key is present, returns an iterator to the proper
   // node, end() otherwise. Implemented through a private function _find()
 
-  iterator find(const key_type& x){ return iterator{_find()}; }
-  const_iterator find(const key_type& x) const{ return iterator{_find()}; }
+  iterator find(const key_type& x){ return iterator{_find(x)}; }
+  const_iterator find(const key_type& x) const{ return const_iterator{_find(x)}; }
   
   // Balance
-  void balance();
+  // Simple implementation to balance the tree
+
+  void balance(){
+
+    std::vector<pair_type> vec{};      // empty vector to store the key-value pairs
+    
+    for(const auto& i : *this){        // ranged for loop
+      
+      vec.push_back(i);		       // we copy all the pairs inside the vector
+    }
+
+    this->clear();		       // we call the function clear to erase the tree
+                                       // in order to replace it with its balanced version
+
+    unsigned int mid{vec.size()/2};    // fin the mid index of the vector
+
+    this->insert(vec[mid]);	       // the value corresponding to the mid position will
+				       // be the root
+
+    // now we need to consider the sub vectors, we delegate to another private function
+    
+    _sub_balance(v, 0, mid-1);
+    _sub_balance(v, mid+1, vec.size());
+  }
 
   // Subscripting Operator
-  value_type& operator[](const key_type& x);
+  // Returns a reference to the value that is mapped to a key equivalent to x,
+  // performing an insertion if such key does not already exist.
+
+  value_type& operator[](const key_type& x){
+  
+    return insert()
+  }
   value_type& operator[](key_type&& x);
   
   // Put to operator
