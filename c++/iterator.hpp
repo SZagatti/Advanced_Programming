@@ -11,14 +11,14 @@ class bst<key_type, value_type, comparison_type>::_iterator{
   using val_type = T;
   using difference_type = std::ptrdiff_t;
   using iterator_category = std::forward_iterator_tag;
-  using reference = value_type&;
-  using pointer = value_type*;
+  using reference = val_type&;
+  using pointer = val_type*;
 
   reference operator*() const noexcept { return current->pair; }
-  reference operator->() const noexcept { return &**this; }
+  pointer operator->() const noexcept { return &(*(*this)); }
   
   // pre increment  
-  iterator& operator++() {
+  _iterator& operator++() {
     
     // if current is nullptr we return current
     if(!current){
@@ -36,12 +36,14 @@ class bst<key_type, value_type, comparison_type>::_iterator{
 
     }else{                    // if current has not a right child we need to go up
       
-      node* up = current->parent.get();
+      node* up = current->parent;
       while(up != nullptr && current == up->right.get()){ // we go up until we reach a nullptr or we are
                                                           // not a right child anymore
         current = up;
         up = current->parent;
       }
+
+    current = up;
     }
     
     return *this;
@@ -69,7 +71,8 @@ class bst<key_type, value_type, comparison_type>::_iterator{
 
     return !(a==b);
   }
-
+  
+  friend class bst;
 };
 
 #endif
