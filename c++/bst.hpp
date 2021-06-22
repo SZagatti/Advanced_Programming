@@ -376,8 +376,6 @@ class bst{
 	// right child of the deleted
 	if( deleted_node->right.get() == successor ){
 
-	std::cout << "check 5" << std::endl;
-
 	  // the right child of root becomes the right child of the successor
 	  new_root.get()->right.reset(successor->right.release());
 	  // set parent of right child to root
@@ -385,22 +383,14 @@ class bst{
 
 	}else{
 
-	  std::cout << "check 6" << std::endl;
-
 	  // make right child of new root = right child of deleted and release for deleted
 	  new_root.get()->right.reset(deleted_node->right.release());
-
-	std::cout << "check 7" << std::endl;
 
 	  // make right parent = to root
 	  new_root.get()->right.get()->parent = new_root.get();
 
-std::cout << "check 8" << std::endl;
-
 	  // we need to handle the case in which successor has a right child
 	  if( successor->right ){
-
-std::cout << "check 10" << std::endl;          
 
 	    // make parent of right child of successor equal to successor parent
 	    successor->right->parent = successor->parent;
@@ -409,8 +399,6 @@ std::cout << "check 10" << std::endl;
 	    successor->parent->left.reset(successor->right.release());
 
 	  }else{
-
-std::cout << "check 11" << std::endl;	    
 
 	    // reset successor's parent left child
 	    successor->parent->left.reset();
