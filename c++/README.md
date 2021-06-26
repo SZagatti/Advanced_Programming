@@ -83,12 +83,12 @@ The purpose of this benchmark is to compare the performance of the proposed impl
 
 Each data structure involved in the benchmark has been filled with a number of randomised integer key - integer value pairs, ranging from 1000 to 100000 with an increment of 1000 at each step. For each iteration a vector has been filled with integer consecutive numbers from 1 to the number of pairs in that step, then the vector has been randomized and the pairs have been inserted in the different structures. Subsequently, the vector has been randomized again and divided in chunks of 50, then for each chunk the time to find all the 50 values has been considered as a measure of performance, therefore obtaining a number of measures equal to the number of nodes inserted in each step divided by 50. In this way from all these measures a mean value has been obtained for each step. The results of the benchmark are displayed in the following graphs, where the script and the data structures have beem compiled with different levels of compiler optimisation.
 
-![](/no_opt.png)
+![title](no_opt.png)
 
-![](/O1.png)
+![title](O1.png)
 
-![](/O2.png)
+![title](O2.png)
 
-![](/O3.png)
+![title](O3.png)
 
 In general it is possible to observe that in every case the balanced tree has better performance than the unbalanced version, in accordance with the expectations. Different considerations can be made for `std::map` which behaves in a different way compared to the expectations. It is possible to notice that `std::map` has a worse performance than both balanced and unbalanced versions of the tree in the case of no optimization and an in between performance in the case of one degree of optimization. Moreover for the other two cases `std::map` behaves as expected, having a much better performance than the other two data structures. This behaviour could be explained by considering that the simpler implementation of the proposed data structure could spawn an executable which is more performant than the deeper and more sophisticated implementation of `std::map` when considering lower levels of optimization; then once the optimization is present `std::map` gains much more performance from the compiler optimization.
