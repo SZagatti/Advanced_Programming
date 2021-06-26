@@ -49,6 +49,6 @@ ggplot() +
   scale_colour_manual("", 
                       breaks = c("Unbalanced Tree", "Balanced Tree", "std::map"),
                       values = c("red", "blue", "green")) +
-  labs(title="Benchmark for find()") +
+  labs(title="Benchmark for find() (no optimization)") +
   theme_minimal() + xlab("# of nodes") +
   ylab("time [nanoseconds]") + theme(plot.title = element_text(size=30), axis.text=element_text(size=16), axis.title =element_text(size=20), legend.title = element_text(size=0), legend.text = element_text(size=18), legend.key.size = unit(2, "lines")) + guides(colour = guide_legend(override.aes = list(size=3)))
