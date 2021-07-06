@@ -1,15 +1,20 @@
 #ifndef iterator_hpp
 #define iterator_hpp
 
+#include <iterator>
+
+template<typename key_type, typename value_type, typename comparison_type>
+class bst;
+
+
 // ============================== ITERATOR ===============================
 //
 // Class that implements the iterator for the binary search tree
 
-template<typename key_type, typename value_type, typename comparison_type>
-template<typename T>
-class bst<key_type, value_type, comparison_type>::_iterator{
+template<typename N, typename T>
+class _iterator{
 
-  node* current;		// node referred to by the iterator
+  node<N>* current;		// node referred to by the iterator
 
   // standard members of an iterator
   public:
@@ -43,7 +48,7 @@ class bst<key_type, value_type, comparison_type>::_iterator{
 
     }else{                    		// if current has not a right child go up
       
-      node* up = current->parent;
+      node<N>* up = current->parent;
       while(up != nullptr && current == up->right.get()){ // go up until reaching a nullptr, stop if right child
                                   
         current = up;
@@ -66,7 +71,7 @@ class bst<key_type, value_type, comparison_type>::_iterator{
 
 
   // construct an iterator given a pointer to a node
-  explicit _iterator(node* n): current{n} {}
+   explicit _iterator(node<N>* n): current{n} {}
   
   // Equality operator
   friend
@@ -85,6 +90,7 @@ class bst<key_type, value_type, comparison_type>::_iterator{
 
   // bst has to be a friend class in order to be able to access the private
   // members of the iterators
+  template<typename key_type, typename value_type, typename comparison_type>
   friend class bst;
 };
 

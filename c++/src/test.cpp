@@ -60,6 +60,14 @@ int main(){
   std::cout << " returned iterator with key " << (already_ins.first)->first;
   std::cout << " and value " << (already_ins.first)->second << ", ";
   std::cout << "flag = " << std::boolalpha << already_ins.second << "." << std::endl;
+
+  std::cout << "\nTrying to change the value corresponding to key 6 into 'z':\n";
+  (tree.insert(std::pair<int, char>(6, 'z'))).first->second = 'z';
+  
+  std::cout << "Traversing the tree we obtain:\n";
+  std::cout << tree << std::endl;
+  std::cout << "Nodes:\n";
+  tree.print();
   
   // EMPLACE
 
@@ -98,7 +106,7 @@ int main(){
   std::cout << "flag = " << std::boolalpha << already_emp.second << std::endl;
   
   // TEST TREE WITH GREATER THAN
-  std::cout << "\nTesting insertion and visualization of a tree with std::greater<key_type> inserting method:\n\n";
+  std::cout << "\nTesting insertion and visualization of a tree with std::greater<key_type> inserting method:\n";
   std::cout << "\nExpected tree:\n";
   std::cout << "     4\n   /  \\ \n  6    2\n / \\  / \\ \n7  5  3  1\n" << std::endl;  
 

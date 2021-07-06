@@ -7,6 +7,15 @@
 #include <memory>
 #include <iterator>
 #include<sstream>
+#include "node.hpp"
+#include "iterator.hpp"
+
+template<typename T>
+class node;                  // structure of a node inside the tree (see node.hpp)
+
+template<typename N, typename T>          // class iterator (see iterator.hpp)
+class _iterator;
+
 
 // ============================== BST CLASS ===============================
 // 
@@ -18,27 +27,23 @@
 template<typename key_type, typename value_type, typename comparison_type = std::less<key_type> >
 class bst{
   
-  struct node;			// structure of a node inside the tree (see node.hpp)
-  template<typename T>		// class iterator (see iterator.hpp)
-  class _iterator;
-  
   public:
   using pair_type = typename std::pair<const key_type, value_type>;
-  using iterator = _iterator<pair_type>;
-  using const_iterator = _iterator<const pair_type>;
-  
+  using iterator = _iterator<pair_type, pair_type>;
+  using const_iterator = _iterator<pair_type, const pair_type>;
+
   private:
   
   comparison_type op;		    // comparison operator
   
-  std::unique_ptr<node> root;       // pointer to the root node
+  std::unique_ptr<node<pair_type>> root;       // pointer to the root node
   
   //============================== _COPY ===============================
   //
   // A private auxiliary function used to recursively copy a tree by 
   // performing a deep copy of the nodes.
   
-  void _copy(std::unique_ptr<node>& n){
+  void _copy(std::unique_ptr<node<pair_type>>& n){
     
     insert(n.get() -> pair);	    // insert the value-key pair for the node passed in the
                                     // copy tree, creating a new node inside it
@@ -81,7 +86,7 @@ class bst{
         // create a new node initialized with the given key-value pair
         // and return a pair iterator_to_the_node - true
 
-        tmp -> left.reset(new node{tmp, std::forward<O>(x)});
+        tmp -> left.reset(new node<pair_type>{tmp, std::forward<O>(x)});
         return std::make_pair<iterator, bool>(iterator{tmp}, true);
       }
 
@@ -97,7 +102,7 @@ class bst{
         // create a new node initialized with the given key-value pair
         // and return a pair iterator_to_the_node - true
 
-        tmp -> right.reset(new node{tmp, std::forward<O>(x)});
+        tmp -> right.reset(new node<pair_type>{tmp, std::forward<O>(x)});
         return std::make_pair<iterator, bool>(iterator{tmp}, true);
       }
 
@@ -112,7 +117,7 @@ class bst{
    // in case tree is empty create a node with the given key-value pair, set it as the root
    // and return a pair iterator_to_the_node - true
 
-    root.reset(new node{nullptr, std::forward<O>(x)});
+    root.reset(new node<pair_type>{nullptr, std::forward<O>(x)});
     return std::make_pair<iterator, bool>(iterator{tmp}, true);
   }
 
@@ -121,7 +126,7 @@ class bst{
   // A private auxiliary function that finds the leftmost node, so the
   // one with the smallest key and returns a raw pointer to it.
 
-  node* _begin() const noexcept{
+  node<pair_type>* _begin() const noexcept{
 
     if(!root){ return nullptr; }  	// if the tree is empty (root = nullptr) we return nullptr
 
@@ -130,7 +135,7 @@ class bst{
     while( tmp -> left ){         	// keep going to the left until a node that has no left
                                   	// child is found and then return it
 
-      tmp = tmp-> left.get();
+      tmp = tmp->left.get();
     }
 
     return tmp;
@@ -141,7 +146,7 @@ class bst{
   // A private auxiliary function that finds a node given its key and 
   // returns a raw pointer to it.
 
-  node* _find(const key_type& x) const noexcept{
+  node<pair_type>* _find(const key_type& x) const noexcept{
 
     auto tmp = root.get();
 
@@ -207,7 +212,7 @@ class bst{
   // Given a binary search tree it performs a deep copy of it, creating a
   // new binary search tree.
 
-  explicit bst(const bst& x): op{x.op}, root{std::unique_ptr<node>(new node(nullptr, x.root.get()->pair))} {
+  explicit bst(const bst& x): op{x.op}, root{std::unique_ptr<node<pair_type>>(new node<pair_type>(nullptr, x.root.get()->pair))} {
 
     if( x.root.get()->left ){    	// if the root of the copied tree has a left child, it has to be copied
    
@@ -307,9 +312,8 @@ class bst{
   // Given two arguments a proper key_type, value_type pair is created,
   // then a new node is initialized with this key-value pair and 
   // inserted in the tree in the correct position as done in insert.
-  // a pair is returned, where the first
-  // element is an iterator to the newly inserted node and the second
-  // one is a boolean.
+  // A pair is returned, where the first element is an iterator to the
+  // newly inserted node and the second one is a boolean.
   // If the newly inserted key is not already present the boolean is set
   // to true, the node is created with the correct value and inserted in
   // the correct position.
@@ -492,7 +496,7 @@ class bst{
 	auto successor = (++deleted_iterator).current;  // find successor
 
         // create a new node to store the newly assigned root
-	auto new_root = std::unique_ptr<node>(new node(nullptr, successor->pair));
+	auto new_root = std::unique_ptr<node<pair_type>>(new node<pair_type>(nullptr, successor->pair));
 	
         // make left child of new root = left child of deleted and release for deleted
 	new_root.get()->left.reset(deleted_node->left.release()); 
@@ -605,7 +609,7 @@ class bst{
 
         // create a new node initialized with the values from the successor
 	// of the deleted node
-        auto new_node = std::unique_ptr<node>(new node(parent_deleted, successor->pair));
+        auto new_node = std::unique_ptr<node<pair_type>>(new node<pair_type>(parent_deleted, successor->pair));
 
         // make left child of new node = left child of deleted and release for deleted
         new_node.get()->left.reset(deleted_node->left.release());
@@ -699,8 +703,5 @@ class bst{
     }
   } 
 };
-
-#include "node.hpp"
-#include "iterator.hpp"
 
 #endif
